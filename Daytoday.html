@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คำนวณระยะห่างระหว่างวันที่</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            font-family: 'Noto Sans Thai', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background: linear-gradient(135deg, rgb(116, 235, 213), rgb(159, 172, 230));
+        }
+
+        .button-container {
+            padding: 35px 0px 25px 0px;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .button-container a {
+            text-decoration: none;
+            background-color: rgb(0, 123, 255);
+            color: white;
+            padding: 10px 15px;
+            margin: 0 5px;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .button-container a:hover {
+            background-color: rgb(0, 86, 179);
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px 30px;
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 24px;
+            background-color: rgb(74, 144, 226);
+            color: white;
+            margin-bottom: 15px;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        
+        .date-input-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .date-input-group label {
+            font-size: 16px;
+            color: rgb(85, 85, 85);
+            margin-right: 10px;
+        }
+
+        .date-input-group input {
+            width: 30%;
+            padding: 5px;
+            font-size: 14px;
+            border: 1px solid rgb(221, 221, 221);
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: rgb(68, 68, 68);
+        }
+    </style>
+</head>
+<body>
+    <div class="button-container">
+        <a href="/index.html" target="_self">หน้าโปรแกรมคำนวณอายุ</a>
+        <a href="/Yeild.html" target="_self">โปรแกรมคำนวณ Yield หรือผลตอบแทน</a>
+        <a href="/Daytoday.html" target="_self">คำนวณระยะห่างวันที่ 1 และวันที่ 2</a>
+    </div>
+    <div class="container">
+        <h1>คำนวณระยะห่างระหว่างวันที่ 1 และวันที่ 2</h1>
+
+        <div class="date-input-group">
+            <label for="day1">วันที่ 1:</label>
+            <input type="number" id="day1" placeholder="วัน" min="1" max="31">
+            <input type="number" id="month1" placeholder="เดือน" min="1" max="12">
+            <input type="number" id="year1" placeholder="ปี (พ.ศ.)" min="2400" max="9999">
+        </div>
+
+        <div class="date-input-group">
+            <label for="day2">วันที่ 2:</label>
+            <input type="number" id="day2" placeholder="วัน" min="1" max="31">
+            <input type="number" id="month2" placeholder="เดือน" min="1" max="12">
+            <input type="number" id="year2" placeholder="ปี (พ.ศ.)" min="2400" max="9999">
+        </div>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function convertToGregorian(year, month, day) {
+            return new Date(year - 543, month - 1, day);
+        }
+
+        function calculateDifference() {
+            const day1 = parseInt(document.getElementById('day1').value);
+            const month1 = parseInt(document.getElementById('month1').value);
+            const year1 = parseInt(document.getElementById('year1').value);
+
+            const day2 = parseInt(document.getElementById('day2').value);
+            const month2 = parseInt(document.getElementById('month2').value);
+            const year2 = parseInt(document.getElementById('year2').value);
+
+            if (isNaN(day1) || isNaN(month1) || isNaN(year1) || isNaN(day2) || isNaN(month2) || isNaN(year2)) {
+                document.getElementById('result').textContent = 'กรุณากรอกข้อมูลให้ครบถ้วน';
+                return;
+            }
+
+            const date1 = convertToGregorian(year1, month1, day1);
+            const date2 = convertToGregorian(year2, month2, day2);
+
+            if (isNaN(date1.getTime()) || isNaN(date2.getTime())) {
+                document.getElementById('result').textContent = 'วันที่ไม่ถูกต้อง';
+                return;
+            }
+
+            const timeDifference = Math.abs(date2 - date1);
+            const dayDifference = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+
+            // คำนวณปีและวัน
+            const years = Math.floor(dayDifference / 365);
+            const remainingDays = dayDifference % 365;
+
+            // แสดงผล
+            if (years > 0) {
+                document.getElementById('result').textContent = 
+                    `ระยะห่างระหว่างวันที่คือ ${years} ปี ${remainingDays} วัน (${dayDifference} วันทั้งหมด)`;
+            } else {
+                document.getElementById('result').textContent = 
+                    `ระยะห่างระหว่างวันที่คือ ${dayDifference} วัน`;
+            }
+        }
+
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', calculateDifference);
+        });
+    </script>
+</body>
+</html>

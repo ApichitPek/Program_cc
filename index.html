@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>โปรแกรมคำนวณอายุแบบละเอียด</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans Thai';
+            background: rgb(125, 212, 238);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            width: 100%;
+            padding: 10px;
+        }
+
+        .button-container a {
+            background-color: rgb(22, 158, 192);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            text-align: center;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+
+        .button-container a:hover {
+            background-color: rgb(53, 122, 183);
+        }
+
+        .calculator {
+            background: rgb(255, 255, 255);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 24px;
+            background-color: rgb(74, 144, 226);
+            color: white;
+            margin-bottom: 15px;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid rgb(204, 204, 204);
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .result-flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .result-item {
+            flex: 1 1 calc(33.333% - 10px);
+            background: rgb(255, 255, 255);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .result-label {
+            font-weight: bold;
+            color: rgb(51, 51, 51);
+        }
+
+        .result-value {
+            font-size: 18px;
+            color: rgb(74, 144, 226);
+        }
+
+        .result-unit {
+            color: rgb(102, 102, 102);
+            font-size: 14px;
+        }
+
+        .error {
+            color: rgb(255, 0, 0);
+            font-size: 14px;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="button-container">
+        <a href="/index.html" target="_self">หน้าโปรแกรมคำนวณอายุ</a>
+        <a href="/Yeild.html" target="_self">ปรแกรมคำนวณ Yield หรือผลตอบแทน</a>
+        <a href="/Daytoday.html" target="_self">คำนวณระยะห่างวันที่1และวันที่2</a>
+    </div>
+
+    <div class="calculator">
+        <h1>โปรแกรมคำนวณอายุแบบละเอียด</h1>
+        <label>วัน:</label>
+        <input type="number" id="birthDay" placeholder="วัน" min="1" max="31">
+        <label>เดือน:</label>
+        <input type="number" id="birthMonth" placeholder="เดือน" min="1" max="12">
+        <label>ปี:</label>
+        <input type="number" id="birthYear" placeholder="ปี พ.ศ." min="1900" max="2100">
+        
+        <!-- ช่องข้อมูลเวลา (ชั่วโมง, นาที, วินาที) -->
+        <label>ชั่วโมง:</label>
+        <input type="number" id="birthHour" placeholder="ชั่วโมง" min="0" max="23">
+        
+        <label>นาที:</label>
+        <input type="number" id="birthMinute" placeholder="นาที" min="0" max="59">
+        
+        <label>วินาที:</label>
+        <input type="number" id="birthSecond" placeholder="วินาที" min="0" max="59">
+
+        <div class="error" id="error"></div>
+
+        <div class="result-flex" id="resultFlex">
+            <div class="result-item">
+                <div class="result-label">อายุ</div>
+                <div class="result-value" id="years">0</div>
+                <div class="result-unit">ปี</div>
+            </div>
+            <div class="result-item">
+                <div class="result-label">เดือน</div>
+                <div class="result-value" id="months">0</div>
+                <div class="result-unit">เดือน</div>
+            </div>
+            <div class="result-item">
+                <div class="result-label">วัน</div>
+                <div class="result-value" id="days">0</div>
+                <div class="result-unit">วัน</div>
+            </div>
+            <div class="result-item">
+                <div class="result-label">ชั่วโมง</div>
+                <div class="result-value" id="hours">0</div>
+                <div class="result-unit">ชั่วโมง</div>
+            </div>
+            <div class="result-item">
+                <div class="result-label">นาที</div>
+                <div class="result-value" id="minutes">0</div>
+                <div class="result-unit">นาที</div>
+            </div>
+            <div class="result-item">
+                <div class="result-label">วินาที</div>
+                <div class="result-value" id="seconds">0</div>
+                <div class="result-unit">วินาที</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateAge() {
+            const day = parseInt(document.getElementById('birthDay').value);
+            const month = parseInt(document.getElementById('birthMonth').value) - 1; // 0-based month
+            const year = parseInt(document.getElementById('birthYear').value);
+            const hour = parseInt(document.getElementById('birthHour').value) || 0;
+            const minute = parseInt(document.getElementById('birthMinute').value) || 0;
+            const second = parseInt(document.getElementById('birthSecond').value) || 0;
+            const errorDiv = document.getElementById('error');
+
+            if (!day || !month || !year) {
+                errorDiv.innerText = 'กรุณากรอกข้อมูลวัน เดือน ปีให้ครบถ้วน';
+                clearResults();
+                return;
+            }
+
+            const birthDate = new Date(year, month, day, hour, minute, second);
+            const now = new Date();
+
+            if (birthDate > now) {
+                errorDiv.innerText = 'วันเกิดต้องไม่อยู่ในอนาคต';
+                clearResults();
+                return;
+            }
+
+            errorDiv.innerText = ''; // Clear previous errors
+
+            let years = now.getFullYear() - birthDate.getFullYear();
+            let months = now.getMonth() - birthDate.getMonth();
+            let days = now.getDate() - birthDate.getDate();
+
+            if (days < 0) {
+                months--;
+                days += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+            }
+
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            // คำนวณชั่วโมง, นาที, วินาที
+            let hours = now.getHours() - birthDate.getHours();
+            let minutes = now.getMinutes() - birthDate.getMinutes();
+            let seconds = now.getSeconds() - birthDate.getSeconds();
+
+            // ถ้าชั่วโมง, นาที หรือวินาที < 0
+            if (seconds < 0) {
+                minutes--;
+                seconds += 60;
+            }
+            if (minutes < 0) {
+                hours--;
+                minutes += 60;
+            }
+            if (hours < 0) {
+                days--;
+                hours += 24;
+            }
+
+            document.getElementById('years').innerText = years;
+            document.getElementById('months').innerText = months;
+            document.getElementById('days').innerText = days;
+            document.getElementById('hours').innerText = hours;
+            document.getElementById('minutes').innerText = minutes;
+            document.getElementById('seconds').innerText = seconds;
+        }
+
+        function clearResults() {
+            document.getElementById('years').innerText = '0';
+            document.getElementById('months').innerText = '0';
+            document.getElementById('days').innerText = '0';
+            document.getElementById('hours').innerText = '0';
+            document.getElementById('minutes').innerText = '0';
+            document.getElementById('seconds').innerText = '0';
+        }
+
+        // Update results every second
+        setInterval(calculateAge, 1000);
+    </script>
+</body>
+</html>
